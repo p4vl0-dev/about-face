@@ -5,8 +5,6 @@
 
 import fs from "fs-extra";
 import gulp from "gulp";
-import prefix from "gulp-autoprefixer";
-import sass from "gulp-dart-sass";
 import sourcemaps from "gulp-sourcemaps";
 import path from "node:path";
 import buffer from "vinyl-buffer";
@@ -52,19 +50,6 @@ function buildCode() {
 }
 
 /**
- * Build style sheets
- */
-function buildStyles() {
-	return gulp
-		.src([`${stylesDirectory}/**/*.${stylesExtension}`], { base: `${stylesDirectory}/` })
-		.pipe(sourcemaps.init({ loadMaps: true }))
-		.pipe(sass({ outputStyle: "expanded" }).on("error", sass.logError))
-		.pipe(prefix({ cascade: false }))
-		.pipe(sourcemaps.write("."))
-		.pipe(gulp.dest(`${distDirectory}/styles`));
-}
-
-/**
  * Copy static files
  */
 async function copyFiles() {
@@ -80,7 +65,6 @@ async function copyFiles() {
  */
 export function watch() {
 	gulp.watch(`${sourceDirectory}/**/*.${sourceFileExtension}`, { ignoreInitial: false }, buildCode);
-	gulp.watch(`${stylesDirectory}/**/*.${stylesExtension}`, { ignoreInitial: false }, buildStyles);
 	gulp.watch(
 		staticFiles.map((file) => `${sourceDirectory}/${file}`),
 		{ ignoreInitial: false },
@@ -88,7 +72,7 @@ export function watch() {
 	);
 }
 
-export const build = gulp.series(clean, gulp.parallel(buildCode, buildStyles, copyFiles));
+export const build = gulp.series(clean, gulp.parallel(buildCode, copyFiles));
 
 /********************/
 /*      CLEAN       */

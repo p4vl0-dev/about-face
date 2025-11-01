@@ -95,7 +95,11 @@
 				"name": "Ocultar el Indicador en Fichas Muertas",
 				"hint": "Oculta el indicador de las fichas marcadas como derrotadas en el rastreador de combate (por ejemplo, el marcador grande de calavera en la mayoría de sistemas)."
 			},
-			"facing": "Mirando en dirección"
+			"facing": "Mirando en dirección",
+			"combatOnly": {
+				"name": "Oculta el Indicador mientras no estés en combate",
+				"hint": "Oculta el indicador cuando no el combate no está activo."
+			}
 		},
 		"keybindings": {
 			"lockRotation": {

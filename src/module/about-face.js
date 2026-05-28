@@ -89,7 +89,9 @@ Hooks.once("init", () => {
 });
 Hooks.on("canvasInit", () => game.aboutFace.combatRunning = game.aboutFace.isCombatRunning());
 Hooks.on("canvasReady", async () => {
-	canvas.scene.tokens.forEach((tokenDocument) => game.aboutFace.drawAboutFaceIndicator(tokenDocument.object));
+	canvas.scene.tokens
+		.filter((tokenDocument) => tokenDocument.object)
+		.forEach((tokenDocument) => game.aboutFace.drawAboutFaceIndicator(tokenDocument.object));
 });
 Hooks.on("combatStart", (combat, updateData) => {
 	if (!game.aboutFace.combatOnly) return;

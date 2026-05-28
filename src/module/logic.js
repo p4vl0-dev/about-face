@@ -149,6 +149,7 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 	) {
 		return;
 	}
+	if (updates.level && updates.level !== tokenDocument.level) return;
 
 	const hasChanges = updates.x !== undefined && updates.y !== undefined;
 	const noPositionChanges = !hasChanges || (tokenDocument.x === updates.x && tokenDocument.y === updates.y);

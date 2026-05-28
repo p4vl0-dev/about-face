@@ -45,8 +45,8 @@
 				"hint": "Každá scéna bude vytvořena s nastavením About Face Uzamčení rotace indikátoru na zapnuto. Indikátor se nezmění, když se token pohybuje po takové scéně. Použijte SHIFT + směrová klávesa k rotaci indikátoru."
 			},
 			"lockArrowToFace": {
-				"name": "Připnout indikátor k nejbližšímu poli",
-				"hint": "Nasměruje indikátor k nejbližší dlaždici k níž směruje namísto směru úhlu pohybu. Toto nastavení je ignorováno, pokud je zapnuto Uzamčení rotace indikátoru."
+				"name": "Připnout token k nejbližšímu poli",
+				"hint": "Nasměruje rotaci tokenu k nejbližší dlaždici k níž směruje namísto směru úhlu pohybu."
 			},
 			"lockVisionToRotation": {
 				"name": "Uzamknout vidění k rotaci",
@@ -66,17 +66,17 @@
 				"hint": "Přidá indikátory směru hráči kontrolovaným tokenům."
 			},
 			"flip-or-rotate": {
-				"name": "Zrcadlit nebo rotovat token",
+				"name": "Zrcadlení tokenu",
 				"choices": {
 					"global": "Globální",
-					"rotate": "Rotace",
+					"rotate": "Nezrcadlit tokeny",
 					"flip-h": "Zrcadlit horizontálně",
 					"flip-v": "Zrcadlit vertikálně"
 				},
-				"hint": "Namísto rotace tokenu je zrcadli."
+				"hint": "Nastaví zda token může být zrcadlen horizontálně, vertikálně nebo vůbec."
 			},
 			"facing-direction": {
-				"name": "Směr směřování",
+				"name": "Výchozí směr směřování",
 				"hint": "Výchozí směr kterým tokeny směřují.",
 				"choices": {
 					"right": "Směřovat vpravo",
@@ -88,6 +88,10 @@
 			"indicator-sprite": {
 				"name": "Velikost indikátoru",
 				"hint": "Změnit velikost ikony indikátoru."
+			},
+			"combatOnly": {
+				"name": "Skrýt indikátor mimo boj",
+				"hint": "Skryje indikátor, pokud není aktivní boj."
 			}
 		},
 		"keybindings": {

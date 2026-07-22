@@ -37,8 +37,8 @@
 		"options": {
 			"changeEverySceneDialog": "Você gostaria de alterar esta configuração para todas as cenas?",
 			"disable-indicator": "Desabilitar Indicador de Direção",
-			"individual-token-text": "Exibir indicador para os tokens?",
-			"facing": "Direção",
+			"individual-token-text": "Exibir indicador para este token?",
+			"facing": "Orientação",
 			"arrowColor": {
 				"name": "Cor do Indicador",
 				"hint": "Selecione uma cor para o indicador.",
@@ -53,8 +53,8 @@
 				"hint": "Toda cena será criada com a configuração Bloquear Rotação do Indicador ativada. O indicador não mudará quando o token se mover em uma dessas cenas. Use SHIFT + tecla da direção para rotacionar o indicador."
 			},
 			"lockArrowToFace": {
-				"name": "Ajustar Indicador ao Espaço Mais Próximo",
-				"hint": "Ajusta a direção do indicador para o espaço mais próximo em vez da direção do ângulo do movimento feito. Esta configuração é ignorada se \"Bloquear Rotação do Indicador\" estiver ativada."
+				"name": "Encaixar Token ao Tile Mais Próximo",
+				"hint": "Ajusta a rotação do token ao tile mais próximo para o qual estaria virado, ao invés da direção do ângulo do movimento."
 			},
 			"lockRotation": {
 				"name": "Bloquear Rotação",
@@ -65,17 +65,17 @@
 				"hint": "A visão do token irá seguir a sua rotação em vez do indicador. Útil para jogos com Ângulos de Visão. SHIFT + tecla de direção ignore esta configuração. Esta configuração é ignorada se \"Espelhar ou rotacionar o token\" não for \"Rotacionar\"."
 			},
 			"enable-indicator": {
-				"name": "Indicadores de Token NPC",
-				"hint": "Adiciona um indicador para a direção dos tokens de PNJs.",
+				"name": "Indicadores de Token de PdM",
+				"hint": "Adiciona um indicador para a direção dos tokens de PdM.",
 				"choices": {
-					"0": "Nunca mostrado",
-					"1": "Mostrado ao passar o mouse",
-					"2": "Sempre mostrado"
+					"0": "Nunca Mostrar",
+					"1": "Mostrar ao Passar o Mouse",
+					"2": "Sempre Mostrar"
 				}
 			},
 			"flip-or-rotate": {
 				"name": "Espelhamento do Token",
-				"hint": "Espelha o token em vez de rotacioná-lo.",
+				"hint": "Determina se tokens devem ser espelhados horizontalmente, verticalmente ou de nenhuma forma.",
 				"choices": {
 					"global": "Global",
 					"rotate": "Não Espelhar",
@@ -84,8 +84,8 @@
 				}
 			},
 			"facing-direction": {
-				"name": "Direção da Rotação",
-				"hint": "A direção padrão que o indicador estará voltado para.",
+				"name": "Orientação Padrão",
+				"hint": "A direção padrão para onde o token está orientado.",
 				"choices": {
 					"right": "Direita",
 					"left": "Esquerda",
@@ -95,10 +95,10 @@
 			},
 			"indicator-sprite": {
 				"name": "Tamanho do Indicador",
-				"hint": "Altere o tamanho do ícone do indicador."
+				"hint": "Altera o tamanho do ícone do indicador."
 			},
 			"enable-indicator-pc": {
-				"name": "Indicadores de token de PC",
+				"name": "Indicadores de token de PdJ",
 				"hint": "Adiciona um indicador de direção aos tokens controlados pelo jogador."
 			},
 			"disableAnimations": {
@@ -120,8 +120,12 @@
 				"hint": "Altera como o indicador é desenhado.",
 				"options": {
 					"line": "Linha",
-					"arrow": "Flecha"
+					"arrow": "Seta"
 				}
+			},
+			"combatOnly": {
+				"name": "Esconder Indicador Fora do Combate",
+				"hint": "Esconde o indicador quando não há um combate ativo."
 			}
 		},
 		"tokenConfig": {

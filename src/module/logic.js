@@ -1,5 +1,42 @@
 import { IndicatorMode, MODULE_ID } from "./settings.js";
 
+// ============================================================
+// Helper: compute flip animation duration
+// ============================================================
+function getFlipDuration(distance, tokenDocument) {
+	if (distance <= 0) return 0;
+
+	const action = tokenDocument.movementAction || "walk";
+	const actionConfig = CONFIG.Token.movement?.actions?.[action];
+
+	if (actionConfig?.teleport) {
+		return 0;
+	}
+
+	let movementSpeed = tokenDocument.movementSpeed;
+	if (!movementSpeed || movementSpeed <= 0) {
+		movementSpeed = CONFIG.Token.movement.defaultSpeed || 1;
+	}
+	const speedMultiplier = tokenDocument.speedMultiplier ?? 1;
+
+	const actionSpeedFactors = {
+		crawl: 0.5,
+		swim: 0.5,
+		climb: 0.5,
+	};
+	const actionFactor = actionSpeedFactors[action] ?? 1;
+
+	const gridSize = canvas.grid.size || 100;
+	const speedPxPerSec = movementSpeed * gridSize * speedMultiplier * actionFactor;
+
+	let durationMs = (distance / speedPxPerSec) * 1000;
+	const minDuration = 180;
+	const maxDuration = 2000;
+	durationMs = Math.max(minDuration, Math.min(durationMs, maxDuration));
+
+	return durationMs;
+}
+
 export class AboutFace {
 	constructor() {
 		this.combatOnly = game.settings.get("about-face", "combatOnly");
@@ -9,6 +46,9 @@ export class AboutFace {
 		this.indicatorDrawingType = game.settings.get("about-face", "indicatorDrawingType");
 		this.indicatorSize = game.settings.get("about-face", "sprite-type");
 		this._tokenRotation = false;
+		// Delayed flips for multiple tokens
+		this.pendingFlips = new Map();
+		this.flipTimeout = null;
 	}
 
 	get tokenRotation() {
@@ -115,6 +155,59 @@ export class AboutFace {
 			);
 		}
 	}
+
+	// ------------------------------------------------------------
+	// Delayed flip handling for multiple tokens
+	// ------------------------------------------------------------
+	async applyDelayedFlip(tokenDocument, mirrorKey, mirrorVal, duration) {
+		const tokenId = tokenDocument.id;
+		const now = Date.now();
+		this.pendingFlips.set(tokenId, {
+			mirrorKey,
+			mirrorVal,
+			timestamp: now,
+			tokenDocument,
+			duration
+		});
+		if (this.flipTimeout) {
+			clearTimeout(this.flipTimeout);
+		}
+		this.flipTimeout = setTimeout(() => {
+			this.applyPendingFlips();
+		}, 50);
+	}
+
+	async applyPendingFlips() {
+		const now = Date.now();
+		for (const [tokenId, flipData] of this.pendingFlips.entries()) {
+			if (now - flipData.timestamp > 500) {
+				this.pendingFlips.delete(tokenId);
+				continue;
+			}
+			const tokenDocument = flipData.tokenDocument;
+			const token = tokenDocument?.object;
+			if (!token || !token.visible) {
+				this.pendingFlips.delete(tokenId);
+				continue;
+			}
+			try {
+				const source = tokenDocument.toObject();
+				const updates = {};
+				updates[`texture.${flipData.mirrorKey}`] = source.texture[flipData.mirrorKey] * -1;
+				await tokenDocument.update(updates, {
+					animate: flipData.duration > 0,
+					animation: {
+						duration: flipData.duration,
+						linkToMovement: false
+					}
+				});
+			} catch (error) {
+				console.error(`About Face | Error applying flip for token ${tokenId}:`, error);
+			}
+			this.pendingFlips.delete(tokenId);
+		}
+		this.flipTimeout = null;
+	}
 }
 
 // HOOKS
@@ -210,6 +303,27 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 		if ((texture[mirrorKey] < 0 && !mirrorVal) || (texture[mirrorKey] > 0 && mirrorVal)) {
 			const source = tokenDocument.toObject();
 			updates[`texture.${mirrorKey}`] = source.texture[mirrorKey] * -1;
+
+			// --- NEW: compute duration and handle animation ---
+			const distance = Math.hypot(position.x || 0, position.y || 0);
+			const duration = getFlipDuration(distance, tokenDocument);
+			const controlledCount = canvas.tokens?.controlled?.length || 0;
+
+			if (controlledCount > 1) {
+				delete updates[`texture.${mirrorKey}`];
+				game.aboutFace.applyDelayedFlip(tokenDocument, mirrorKey, mirrorVal, duration);
+			} else {
+				if (duration > 0) {
+					options.animation = options.animation || {};
+					options.animation.duration = duration;
+					if (game.version && parseFloat(game.version) >= 13) {
+						options.animation.linkToMovement = false;
+					}
+				} else {
+					options.animate = false;
+				}
+			}
+			// --- END NEW ---
 		}
 	}
 }

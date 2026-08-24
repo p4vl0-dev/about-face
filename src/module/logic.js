@@ -201,7 +201,7 @@ export class AboutFace {
 						linkToMovement: false
 					}
 				});
-			} catch (error) {
+			} catch(error) {
 				console.error(`About Face | Error applying flip for token ${tokenId}:`, error);
 			}
 			this.pendingFlips.delete(tokenId);
@@ -312,16 +312,14 @@ export function onPreUpdateToken(tokenDocument, updates, options, userId) {
 			if (controlledCount > 1) {
 				delete updates[`texture.${mirrorKey}`];
 				game.aboutFace.applyDelayedFlip(tokenDocument, mirrorKey, mirrorVal, duration);
-			} else {
-				if (duration > 0) {
-					options.animation = options.animation || {};
-					options.animation.duration = duration;
-					if (game.version && parseFloat(game.version) >= 13) {
-						options.animation.linkToMovement = false;
-					}
-				} else {
-					options.animate = false;
+			} else if (duration > 0) {
+				options.animation = options.animation || {};
+				options.animation.duration = duration;
+				if (game.version && parseFloat(game.version) >= 13) {
+					options.animation.linkToMovement = false;
 				}
+			} else {
+				options.animate = false;
 			}
 			// --- END NEW ---
 		}
